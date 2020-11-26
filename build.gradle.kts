@@ -49,6 +49,8 @@ dependencies {
     implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
     implementation("io.micronaut.sql:micronaut-hibernate-jpa")
     runtimeOnly("com.h2database:h2")
+
+    implementation("io.micronaut.aws:micronaut-function-aws-api-proxy")
 }
 
 val test by tasks.getting(Test::class) {

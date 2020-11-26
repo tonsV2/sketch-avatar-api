@@ -35,13 +35,22 @@ dependencies {
     implementation("io.micronaut.aws:micronaut-function-aws")
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
+
     testImplementation("io.micronaut:micronaut-http-client")
+    kaptTest("io.micronaut:micronaut-inject-java")
+    testImplementation("io.micronaut.test:micronaut-test-kotest:2.2.1")
+    testImplementation("io.mockk:mockk:1.10.2")
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:4.3.0")
 
     kapt("io.micronaut.data:micronaut-data-processor")
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
     implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
     implementation("io.micronaut.sql:micronaut-hibernate-jpa")
     runtimeOnly("com.h2database:h2")
+}
+
+val test by tasks.getting(Test::class) {
+    useJUnitPlatform { }
 }
 
 java {

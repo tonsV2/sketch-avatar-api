@@ -4,12 +4,17 @@ plugins {
     id("org.jetbrains.kotlin.plugin.allopen") version "1.4.10"
     id("com.github.johnrengelman.shadow") version "6.1.0"
     id("io.micronaut.library") version "1.2.0"
+    id("application")
 
     id("org.jetbrains.kotlin.plugin.jpa") version "1.4.10"
 }
 
 version = "1.0.0"
 group = "sketch.avatar.api"
+
+application {
+    mainClassName = "sketch.avatar.api.Application"
+}
 
 val kotlinVersion = project.properties["kotlinVersion"]
 
@@ -36,7 +41,7 @@ dependencies {
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    testImplementation("io.micronaut:micronaut-http-server-netty")
+    implementation("io.micronaut:micronaut-http-server-netty")
     implementation("io.micronaut:micronaut-http-client")
 
     kaptTest("io.micronaut:micronaut-inject-java")

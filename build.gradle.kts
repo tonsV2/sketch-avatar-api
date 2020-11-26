@@ -4,12 +4,15 @@ plugins {
     id("org.jetbrains.kotlin.plugin.allopen") version "1.4.10"
     id("com.github.johnrengelman.shadow") version "6.1.0"
     id("io.micronaut.library") version "1.2.0"
+
+    id("org.jetbrains.kotlin.plugin.jpa") version "1.4.10"
 }
 
-version = "0.1"
+version = "1.0.0"
 group = "sketch.avatar.api"
 
-val kotlinVersion=project.properties.get("kotlinVersion")
+val kotlinVersion = project.properties["kotlinVersion"]
+
 repositories {
     mavenCentral()
     jcenter()
@@ -33,9 +36,13 @@ dependencies {
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
     testImplementation("io.micronaut:micronaut-http-client")
+
+    kapt("io.micronaut.data:micronaut-data-processor")
+    implementation("io.micronaut.sql:micronaut-jdbc-hikari")
+    implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
+    implementation("io.micronaut.sql:micronaut-hibernate-jpa")
+    runtimeOnly("com.h2database:h2")
 }
-
-
 
 java {
     sourceCompatibility = JavaVersion.toVersion("1.8")
@@ -52,7 +59,4 @@ tasks {
             jvmTarget = "1.8"
         }
     }
-
-
 }
-

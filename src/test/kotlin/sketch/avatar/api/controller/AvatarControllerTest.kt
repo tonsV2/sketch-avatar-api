@@ -31,7 +31,7 @@ internal class AvatarControllerTest(private val avatarRepository: AvatarReposito
 
         // Then
         val actualId = response.id
-        val actualKey = response.key
+        val actualKey = response.s3key
 
         assertNotEquals(0, actualId)
         assertEquals(key, actualKey)
@@ -52,8 +52,8 @@ internal class AvatarControllerTest(private val avatarRepository: AvatarReposito
         // Then
         assertEquals(2, avatars.count())
 
-        assertEquals(key0, avatar0.key)
-        assertEquals(key1, avatar1.key)
+        assertEquals(key0, avatar0.s3key)
+        assertEquals(key1, avatar1.s3key)
     }
 
     @Test
@@ -68,7 +68,7 @@ internal class AvatarControllerTest(private val avatarRepository: AvatarReposito
 
         // Then
         assertEquals(id, response.id)
-        assertEquals(key, response.key)
+        assertEquals(key, response.s3key)
     }
 
     private fun postAvatar(key: String): Avatar {

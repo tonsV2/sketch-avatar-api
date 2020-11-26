@@ -6,13 +6,16 @@ import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import sketch.avatar.api.configuration.AwsConfiguration
 import sketch.avatar.api.domain.Avatar
 import sketch.avatar.api.repository.AvatarRepository
 import java.util.*
 
 internal class AvatarServiceImplTest {
     private val avatarRepository = mockk<AvatarRepository>()
-    private val avatarService = AvatarServiceImpl(avatarRepository)
+    private val fileStorageService = mockk<FileStorageServiceImpl>()
+    private val awsConfiguration = mockk<AwsConfiguration>()
+    private val avatarService = AvatarServiceImpl(avatarRepository, fileStorageService, awsConfiguration)
 
     @Test
     fun `Find by key`() {
@@ -23,7 +26,7 @@ internal class AvatarServiceImplTest {
 
         val found = avatarService.findByKey(key)
 
-        assertEquals(key, found.key)
+        assertEquals(key, found.s3key)
         verify(exactly = 1) { avatarRepository.findByKey(key) }
     }
 
@@ -36,7 +39,7 @@ internal class AvatarServiceImplTest {
 
         val saved = avatarService.save(avatar)
 
-        assertEquals(key, saved.key)
+        assertEquals(key, saved.s3key)
         verify(exactly = 1) { avatarRepository.save(avatar) }
     }
 
@@ -57,10 +60,10 @@ internal class AvatarServiceImplTest {
         assertTrue(avatars.contains(avatar1))
 
         val firstAvatar = avatars.elementAt(0)
-        assertEquals(key0, firstAvatar.key)
+        assertEquals(key0, firstAvatar.s3key)
 
         val secondAvatar = avatars.elementAt(1)
-        assertEquals(key1, secondAvatar.key)
+        assertEquals(key1, secondAvatar.s3key)
 
         verify(exactly = 1) { avatarRepository.findAll() }
     }
@@ -76,7 +79,7 @@ internal class AvatarServiceImplTest {
         val found = avatarService.findById(id)
 
         assertEquals(id, found.id)
-        assertEquals(key, found.key)
+        assertEquals(key, found.s3key)
         verify(exactly = 1) { avatarRepository.findById(id) }
     }
 }

@@ -22,3 +22,9 @@ jpa:
         hbm2ddl:
           auto: update
         show_sql: true
+
+aws:
+  s3:
+    bucket:
+      legacy: sketch-legacy
+      modern: sketch-modern

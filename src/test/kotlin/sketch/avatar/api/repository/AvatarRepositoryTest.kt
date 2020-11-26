@@ -25,6 +25,6 @@ internal class AvatarRepositoryTest(private val avatarRepository: AvatarReposito
         val findByKey = avatarRepository.findByKey(key)
 
         // Then
-        assertEquals(key, findByKey.key)
+        assertEquals(key, findByKey.s3key)
     }
 }

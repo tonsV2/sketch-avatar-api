@@ -1,0 +1,7 @@
+datasources:
+  default:
+    url: ${JDBC_DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driverClassName: org.mariadb.jdbc.Driver
+    schema-generate: CREATE_DROP

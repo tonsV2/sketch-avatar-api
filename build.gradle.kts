@@ -49,6 +49,7 @@ dependencies {
     implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
     implementation("io.micronaut.sql:micronaut-hibernate-jpa")
     runtimeOnly("com.h2database:h2")
+    runtimeOnly("org.mariadb.jdbc:mariadb-java-client:2.7.1")
 
     implementation("io.micronaut.aws:micronaut-function-aws-api-proxy")
 }

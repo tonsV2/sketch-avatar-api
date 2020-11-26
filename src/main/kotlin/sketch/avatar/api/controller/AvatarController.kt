@@ -1,8 +1,10 @@
 package sketch.avatar.api.controller
 
+import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Post
+import io.micronaut.http.server.types.files.StreamedFile
 import sketch.avatar.api.domain.Avatar
 import sketch.avatar.api.service.AvatarService
 
@@ -16,4 +18,10 @@ class AvatarController(private val avatarService: AvatarService) {
 
     @Get("/{id}")
     fun getAvatar(id: Long): Avatar = avatarService.findById(id)
+
+    @Get("/{id}/avatar")
+    fun getImage(id: Long): StreamedFile {
+        val image = avatarService.getImage(id)
+        return StreamedFile(image, MediaType.APPLICATION_OCTET_STREAM_TYPE)
+    }
 }

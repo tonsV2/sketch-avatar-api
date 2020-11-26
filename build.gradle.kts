@@ -57,6 +57,7 @@ dependencies {
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client:2.7.1")
 
     implementation("io.micronaut.aws:micronaut-function-aws-api-proxy")
+    implementation("com.amazonaws:aws-java-sdk-s3:1.11.414")
 }
 
 val test by tasks.getting(Test::class) {

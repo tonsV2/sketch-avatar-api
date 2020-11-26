@@ -36,7 +36,7 @@ dependencies {
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    implementation("io.micronaut:micronaut-http-server-netty")
+    testImplementation("io.micronaut:micronaut-http-server-netty")
     implementation("io.micronaut:micronaut-http-client")
 
     kaptTest("io.micronaut:micronaut-inject-java")

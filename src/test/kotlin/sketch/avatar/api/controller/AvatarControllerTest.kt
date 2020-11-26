@@ -1,9 +1,7 @@
 package sketch.avatar.api.controller
 
-import io.kotest.assertions.fail
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import io.mockk.MockKAnnotations
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.BeforeEach
@@ -11,7 +9,6 @@ import org.junit.jupiter.api.Test
 import sketch.avatar.api.controller.client.AvatarClient
 import sketch.avatar.api.domain.Avatar
 import sketch.avatar.api.repository.AvatarRepository
-import javax.inject.Inject
 
 @MicronautTest
 internal class AvatarControllerTest(private val avatarRepository: AvatarRepository, private val avatarClient: AvatarClient) {
@@ -41,12 +38,43 @@ internal class AvatarControllerTest(private val avatarRepository: AvatarReposito
     }
 
     @Test
-    fun getAvatars() {
-        fail("")
+    fun `Get all avatars`() {
+        // Given
+        val key0 = "key0"
+        val avatar0 = postAvatar(key0)
+
+        val key1 = "key1"
+        val avatar1 = postAvatar(key1)
+
+        // When
+        val avatars = avatarClient.getAvatars()
+
+        // Then
+        assertEquals(2, avatars.count())
+
+        assertEquals(key0, avatar0.key)
+        assertEquals(key1, avatar1.key)
     }
 
     @Test
-    fun getAvatar() {
-        fail("")
+    fun `Get avatar by id`() {
+        // Given
+        val key = "key"
+        val avatar = postAvatar(key)
+        val id = avatar.id
+
+        // When
+        val response = avatarClient.getAvatar(id)
+
+        // Then
+        assertEquals(id, response.id)
+        assertEquals(key, response.key)
+    }
+
+    private fun postAvatar(key: String): Avatar {
+        val avatar = Avatar(key)
+        return avatarClient.postAvatar(avatar)
+// TODO: Why doesn't avatarRepository.save work?
+//        return avatarRepository.save(avatar)
     }
 }

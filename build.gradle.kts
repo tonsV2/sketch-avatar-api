@@ -58,6 +58,8 @@ dependencies {
 
     implementation("io.micronaut.aws:micronaut-function-aws-api-proxy")
     implementation("com.amazonaws:aws-java-sdk-s3:1.11.414")
+
+    implementation("io.github.microutils:kotlin-logging:2.0.3")
 }
 
 val test by tasks.getting(Test::class) {

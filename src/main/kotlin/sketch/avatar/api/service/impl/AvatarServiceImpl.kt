@@ -1,5 +1,6 @@
 package sketch.avatar.api.service.impl
 
+import mu.KotlinLogging
 import sketch.avatar.api.configuration.AwsConfiguration
 import sketch.avatar.api.domain.Avatar
 import sketch.avatar.api.repository.AvatarRepository
@@ -14,6 +15,8 @@ class AvatarServiceImpl(
         private val fileStorageService: FileStorageService,
         private val awsConfiguration: AwsConfiguration) : AvatarService {
 
+    private val logger = KotlinLogging.logger {}
+
     override fun findByKey(key: String): Avatar = avatarRepository.findByKey(key)
     override fun save(avatar: Avatar): Avatar = avatarRepository.save(avatar)
     override fun findAll(): Iterable<Avatar> = avatarRepository.findAll()
@@ -22,7 +25,9 @@ class AvatarServiceImpl(
     override fun findById(id: Long): Avatar = avatarRepository.findById(id).get()
 
     override fun getImage(id: Long): InputStream {
+        logger.info { "AvatarService.getImage($id)" }
         val avatar = findById(id)
+        logger.info { avatar }
         val key = avatar.s3key
         return when {
             key.startsWith("image/") -> fileStorageService.get(awsConfiguration.legacyBucket, key)

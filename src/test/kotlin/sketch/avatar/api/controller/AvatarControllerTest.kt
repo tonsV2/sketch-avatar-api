@@ -2,8 +2,7 @@ package sketch.avatar.api.controller
 
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import io.mockk.MockKAnnotations
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sketch.avatar.api.controller.client.AvatarClient
@@ -71,10 +70,27 @@ internal class AvatarControllerTest(private val avatarRepository: AvatarReposito
         assertEquals(key, response.s3key)
     }
 
+    /**
+     * This test assumes an image exists in S3 with a key matching what's given below
+     * The actual binary content of the response isn't verified
+     */
+    @Test
+    fun `Get avatar image by id`() {
+        // Given
+        val key = "image/avatar-1.png"
+        val avatar = postAvatar(key)
+        val id = avatar.id
+
+        // When
+        val response = avatarClient.getImage(id)
+
+        // Then
+        assertEquals(200, response.statusCode)
+        assertTrue(response.isBase64Encoded)
+    }
+
     private fun postAvatar(key: String): Avatar {
         val avatar = Avatar(key)
         return avatarClient.postAvatar(avatar)
-// TODO: Why doesn't avatarRepository.save work?
-//        return avatarRepository.save(avatar)
     }
 }

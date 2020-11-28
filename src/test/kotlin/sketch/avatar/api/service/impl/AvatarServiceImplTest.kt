@@ -1,5 +1,6 @@
 package sketch.avatar.api.service.impl
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test
 import sketch.avatar.api.configuration.AwsConfiguration
 import sketch.avatar.api.domain.Avatar
 import sketch.avatar.api.repository.AvatarRepository
+import java.io.InputStream
 import java.util.*
 
 internal class AvatarServiceImplTest {
@@ -100,5 +102,25 @@ internal class AvatarServiceImplTest {
         assertEquals(id, updated.id)
         assertEquals(newKey, updated.s3key)
         verify(exactly = 1) { avatarRepository.update(newAvatar) }
+    }
+
+    @Test
+    fun `Get image throws exception on invalid key`() {
+        val id: Long = 1
+        val key = "key"
+        val avatar = Avatar(key, id)
+        val bucket = "bucket"
+        val inputStream = mockk<InputStream>()
+
+        every { avatarRepository.findById(id) } returns Optional.of(avatar)
+        every { awsConfiguration.legacyPrefix } returns "legacy/"
+        every { awsConfiguration.modernPrefix } returns "modern/"
+        every { fileStorageService.get(bucket, key) } returns inputStream
+
+        shouldThrow<InvalidKeyException> {
+            avatarService.getImage(id)
+        }
+
+        verify(exactly = 1) { avatarRepository.findById(id) }
     }
 }

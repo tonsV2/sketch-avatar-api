@@ -31,8 +31,8 @@ class AvatarServiceImpl(
         logger.info { avatar }
         val key = avatar.s3key
         return when {
-            key.startsWith("image/") -> fileStorageService.get(awsConfiguration.legacyBucket, key)
-            key.startsWith("avatar/") -> fileStorageService.get(awsConfiguration.modernBucket, key)
+            key.startsWith(awsConfiguration.legacyPrefix) -> fileStorageService.get(awsConfiguration.legacyBucket, key)
+            key.startsWith(awsConfiguration.modernPrefix) -> fileStorageService.get(awsConfiguration.modernBucket, key)
             else -> throw InvalidKeyException(key)
         }
     }

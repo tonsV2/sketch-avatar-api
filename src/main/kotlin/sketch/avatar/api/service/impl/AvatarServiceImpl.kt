@@ -23,8 +23,7 @@ class AvatarServiceImpl(
     override fun save(avatar: Avatar): Avatar = avatarRepository.save(avatar)
     override fun findAll(): Iterable<Avatar> = avatarRepository.findAll()
 
-// TODO: .orElseGet { throw EntityNotFound(...) }
-    override fun findById(id: Long): Avatar = avatarRepository.findById(id).get()
+    override fun findById(id: Long): Avatar = avatarRepository.findById(id).orElseGet { throw EntityNotFoundException("Id: $id") }
 
     override fun getImage(id: Long): InputStream {
         logger.info { "AvatarService.getImage($id)" }

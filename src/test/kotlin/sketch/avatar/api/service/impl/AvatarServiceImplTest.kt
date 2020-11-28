@@ -82,4 +82,23 @@ internal class AvatarServiceImplTest {
         assertEquals(key, found.s3key)
         verify(exactly = 1) { avatarRepository.findById(id) }
     }
+
+    @Test
+    fun `Update key`() {
+        val id: Long = 1
+        val key = "key"
+        val avatar = Avatar(key, id)
+        val newKey = "newKey"
+
+        every { avatarRepository.findById(id) } returns Optional.of(avatar)
+        every { avatarRepository.update(any()) } returns Avatar(newKey, avatar.id)
+
+        val found = avatarService.findById(id)
+        val newAvatar = Avatar(newKey, found.id)
+        val updated = avatarService.update(newAvatar)
+
+        assertEquals(id, updated.id)
+        assertEquals(newKey, updated.s3key)
+        verify(exactly = 1) { avatarRepository.update(newAvatar) }
+    }
 }

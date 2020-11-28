@@ -22,12 +22,12 @@ internal class AvatarServiceImplTest {
         val key = "key"
         val avatar = Avatar(key)
 
-        every { avatarRepository.findByKey(key) } returns avatar
+        every { avatarRepository.findByS3key(key) } returns avatar
 
         val found = avatarService.findByKey(key)
 
         assertEquals(key, found.s3key)
-        verify(exactly = 1) { avatarRepository.findByKey(key) }
+        verify(exactly = 1) { avatarRepository.findByS3key(key) }
     }
 
     @Test

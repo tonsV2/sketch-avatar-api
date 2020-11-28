@@ -5,7 +5,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import sketch.avatar.api.configuration.AwsConfiguration
 import sketch.avatar.api.domain.Avatar
@@ -21,32 +20,39 @@ internal class AvatarServiceImplTest {
 
     @Test
     fun `Find by key`() {
+        // Given
         val key = "key"
         val avatar = Avatar(key)
 
         every { avatarRepository.findByS3key(key) } returns avatar
 
-        val found = avatarService.findByKey(key)
+        // When
+        val actual = avatarService.findByKey(key)
 
-        assertEquals(key, found.s3key)
+        // Then
+        assertEquals(key, actual.s3key)
         verify(exactly = 1) { avatarRepository.findByS3key(key) }
     }
 
     @Test
     fun `Save avatar`() {
+        // Given
         val key = "key"
         val avatar = Avatar(key)
 
         every { avatarRepository.save(avatar) } returns avatar
 
-        val saved = avatarService.save(avatar)
+        // When
+        val actual = avatarService.save(avatar)
 
-        assertEquals(key, saved.s3key)
+        // Then
+        assertEquals(key, actual.s3key)
         verify(exactly = 1) { avatarRepository.save(avatar) }
     }
 
     @Test
     fun `Find all avatars`() {
+        // Given
         val key0 = "key0"
         val avatar0 = Avatar(key0)
 
@@ -55,38 +61,42 @@ internal class AvatarServiceImplTest {
 
         every { avatarRepository.findAll() } returns listOf(avatar0, avatar1)
 
+        // When
         val avatars = avatarService.findAll()
 
+        // Then
         assertEquals(2, avatars.count())
-        assertTrue(avatars.contains(avatar0))
-        assertTrue(avatars.contains(avatar1))
 
-        val firstAvatar = avatars.elementAt(0)
-        assertEquals(key0, firstAvatar.s3key)
+        val actualAvatar0 = avatars.first { it.s3key == key0 }
+        assertEquals(key0, actualAvatar0.s3key)
 
-        val secondAvatar = avatars.elementAt(1)
-        assertEquals(key1, secondAvatar.s3key)
+        val actualAvatar1 = avatars.first { it.s3key == key1 }
+        assertEquals(key1, actualAvatar1.s3key)
 
         verify(exactly = 1) { avatarRepository.findAll() }
     }
 
     @Test
     fun `Find by id`() {
+        // Given
         val id: Long = 1
         val key = "key"
         val avatar = Avatar(key, id)
 
         every { avatarRepository.findById(id) } returns Optional.of(avatar)
 
-        val found = avatarService.findById(id)
+        // When
+        val actual = avatarService.findById(id)
 
-        assertEquals(id, found.id)
-        assertEquals(key, found.s3key)
+        // Then
+        assertEquals(id, actual.id)
+        assertEquals(key, actual.s3key)
         verify(exactly = 1) { avatarRepository.findById(id) }
     }
 
     @Test
     fun `Update key`() {
+        // Given
         val id: Long = 1
         val key = "key"
         val avatar = Avatar(key, id)
@@ -95,10 +105,12 @@ internal class AvatarServiceImplTest {
         every { avatarRepository.findById(id) } returns Optional.of(avatar)
         every { avatarRepository.update(any()) } returns Avatar(newKey, avatar.id)
 
+        // When
         val found = avatarService.findById(id)
         val newAvatar = Avatar(newKey, found.id)
         val updated = avatarService.update(newAvatar)
 
+        // Then
         assertEquals(id, updated.id)
         assertEquals(newKey, updated.s3key)
         verify(exactly = 1) { avatarRepository.update(newAvatar) }
@@ -106,6 +118,7 @@ internal class AvatarServiceImplTest {
 
     @Test
     fun `Get image throws exception on invalid key`() {
+        // Given
         val id: Long = 1
         val key = "key"
         val avatar = Avatar(key, id)
@@ -117,15 +130,18 @@ internal class AvatarServiceImplTest {
         every { awsConfiguration.modernPrefix } returns "modern/"
         every { fileStorageService.get(bucket, key) } returns inputStream
 
+        // When
         shouldThrow<InvalidKeyException> {
             avatarService.getImage(id)
         }
 
+        // Then
         verify(exactly = 1) { avatarRepository.findById(id) }
     }
 
     @Test
     fun `Get image from legacy`() {
+        // Given
         val id: Long = 1
         val key = "legacy/avatar.png"
         val avatar = Avatar(key, id)
@@ -138,8 +154,10 @@ internal class AvatarServiceImplTest {
         every { awsConfiguration.modernPrefix } returns "modern/"
         every { fileStorageService.get(bucket, key) } returns inputStream
 
+        // When
         avatarService.getImage(id)
 
+        // Then
         verify(exactly = 1) { avatarRepository.findById(id) }
         verify(exactly = 1) { awsConfiguration.legacyPrefix }
         verify(exactly = 1) { awsConfiguration.legacyBucket }
@@ -150,6 +168,7 @@ internal class AvatarServiceImplTest {
 
     @Test
     fun `Get image from modern`() {
+        // Given
         val id: Long = 1
         val key = "modern/avatar.png"
         val avatar = Avatar(key, id)
@@ -162,8 +181,10 @@ internal class AvatarServiceImplTest {
         every { awsConfiguration.modernPrefix } returns "modern/"
         every { fileStorageService.get(bucket, key) } returns inputStream
 
+        // When
         avatarService.getImage(id)
 
+        // Then
         verify(exactly = 1) { avatarRepository.findById(id) }
         verify(exactly = 1) { awsConfiguration.legacyPrefix }
         verify(exactly = 0) { awsConfiguration.legacyBucket }

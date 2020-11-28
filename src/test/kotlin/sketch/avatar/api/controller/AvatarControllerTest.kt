@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test
 import sketch.avatar.api.controller.client.AvatarClient
 import sketch.avatar.api.domain.Avatar
 import sketch.avatar.api.repository.AvatarRepository
-import io.micronaut.http.HttpHeaders
 import io.micronaut.http.HttpHeaders.*
+import io.micronaut.http.MediaType
 
 @MicronautTest
 internal class AvatarControllerTest(private val avatarRepository: AvatarRepository, private val avatarClient: AvatarClient) {
@@ -28,14 +28,11 @@ internal class AvatarControllerTest(private val avatarRepository: AvatarReposito
         val avatar = Avatar(key)
 
         // When
-        val response = avatarClient.postAvatar(avatar)
+        val actual = avatarClient.postAvatar(avatar)
 
         // Then
-        val actualId = response.id
-        val actualKey = response.s3key
-
-        assertNotEquals(0, actualId)
-        assertEquals(key, actualKey)
+        assertNotEquals(0, actual.id)
+        assertEquals(key, actual.s3key)
     }
 
     @Test
@@ -53,8 +50,11 @@ internal class AvatarControllerTest(private val avatarRepository: AvatarReposito
         // Then
         assertEquals(2, avatars.count())
 
-        assertEquals(key0, avatar0.s3key)
-        assertEquals(key1, avatar1.s3key)
+        val actualAvatar0 = avatars.first { it.s3key == key0 }
+        assertEquals(avatar0.s3key, actualAvatar0.s3key)
+
+        val actualAvatar1 = avatars.first { it.s3key == key1 }
+        assertEquals(avatar1.s3key, actualAvatar1.s3key)
     }
 
     @Test
@@ -65,11 +65,11 @@ internal class AvatarControllerTest(private val avatarRepository: AvatarReposito
         val id = avatar.id
 
         // When
-        val response = avatarClient.getAvatar(id)
+        val actual = avatarClient.getAvatar(id)
 
         // Then
-        assertEquals(id, response.id)
-        assertEquals(key, response.s3key)
+        assertEquals(id, actual.id)
+        assertEquals(key, actual.s3key)
     }
 
     /**
@@ -81,15 +81,14 @@ internal class AvatarControllerTest(private val avatarRepository: AvatarReposito
         // Given
         val key = "image/avatar-1.png"
         val avatar = postAvatar(key)
-        val id = avatar.id
 
         // When
-        val response = avatarClient.getImage(id)
+        val actual = avatarClient.getImage(avatar.id)
 
         // Then
-        assertEquals(200, response.status.code)
-        assertTrue(response.headers.contains(CONTENT_TYPE))
-        assertEquals("application/octet-stream", response.headers[CONTENT_TYPE])
+        assertEquals(200, actual.status.code)
+        assertTrue(actual.headers.contains(CONTENT_TYPE))
+        assertEquals(MediaType.APPLICATION_OCTET_STREAM_TYPE.name, actual.headers[CONTENT_TYPE])
     }
 
     private fun postAvatar(key: String): Avatar {

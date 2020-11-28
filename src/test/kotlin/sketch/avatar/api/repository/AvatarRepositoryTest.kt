@@ -22,9 +22,9 @@ internal class AvatarRepositoryTest(private val avatarRepository: AvatarReposito
         avatarRepository.save(avatar)
 
         // When
-        val foundByKey = avatarRepository.findByS3key(key)
+        val actual = avatarRepository.findByS3key(key)
 
         // Then
-        assertEquals(key, foundByKey?.s3key)
+        assertEquals(key, actual?.s3key)
     }
 }

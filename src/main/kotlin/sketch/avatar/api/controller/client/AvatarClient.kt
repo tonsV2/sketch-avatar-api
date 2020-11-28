@@ -1,6 +1,6 @@
 package sketch.avatar.api.controller.client
 
-import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
+import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Post
 import io.micronaut.http.client.annotation.Client
@@ -18,5 +18,5 @@ interface AvatarClient {
     fun getAvatar(id: Long): Avatar
 
     @Get("{id}/avatar")
-    fun getImage(id: Long): APIGatewayProxyResponseEvent
+    fun getImage(id: Long): HttpResponse<ByteArray>
 }

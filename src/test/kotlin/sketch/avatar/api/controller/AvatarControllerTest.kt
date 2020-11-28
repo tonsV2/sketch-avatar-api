@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test
 import sketch.avatar.api.controller.client.AvatarClient
 import sketch.avatar.api.domain.Avatar
 import sketch.avatar.api.repository.AvatarRepository
+import io.micronaut.http.HttpHeaders
+import io.micronaut.http.HttpHeaders.*
 
 @MicronautTest
 internal class AvatarControllerTest(private val avatarRepository: AvatarRepository, private val avatarClient: AvatarClient) {
@@ -85,8 +87,9 @@ internal class AvatarControllerTest(private val avatarRepository: AvatarReposito
         val response = avatarClient.getImage(id)
 
         // Then
-        assertEquals(200, response.statusCode)
-        assertTrue(response.isBase64Encoded)
+        assertEquals(200, response.status.code)
+        assertTrue(response.headers.contains(CONTENT_TYPE))
+        assertEquals("application/octet-stream", response.headers[CONTENT_TYPE])
     }
 
     private fun postAvatar(key: String): Avatar {

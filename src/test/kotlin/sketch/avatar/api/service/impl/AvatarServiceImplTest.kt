@@ -123,4 +123,52 @@ internal class AvatarServiceImplTest {
 
         verify(exactly = 1) { avatarRepository.findById(id) }
     }
+
+    @Test
+    fun `Get image from legacy`() {
+        val id: Long = 1
+        val key = "legacy/avatar.png"
+        val avatar = Avatar(key, id)
+        val bucket = "legacy-bucket"
+        val inputStream = mockk<InputStream>()
+
+        every { avatarRepository.findById(id) } returns Optional.of(avatar)
+        every { awsConfiguration.legacyBucket } returns bucket
+        every { awsConfiguration.legacyPrefix } returns "legacy/"
+        every { awsConfiguration.modernPrefix } returns "modern/"
+        every { fileStorageService.get(bucket, key) } returns inputStream
+
+        avatarService.getImage(id)
+
+        verify(exactly = 1) { avatarRepository.findById(id) }
+        verify(exactly = 1) { awsConfiguration.legacyPrefix }
+        verify(exactly = 1) { awsConfiguration.legacyBucket }
+        verify(exactly = 0) { awsConfiguration.modernPrefix }
+        verify(exactly = 0) { awsConfiguration.modernBucket }
+        verify(exactly = 1) { fileStorageService.get(bucket, key) }
+    }
+
+    @Test
+    fun `Get image from modern`() {
+        val id: Long = 1
+        val key = "modern/avatar.png"
+        val avatar = Avatar(key, id)
+        val bucket = "modern-bucket"
+        val inputStream = mockk<InputStream>()
+
+        every { avatarRepository.findById(id) } returns Optional.of(avatar)
+        every { awsConfiguration.legacyPrefix } returns "legacy/"
+        every { awsConfiguration.modernBucket } returns bucket
+        every { awsConfiguration.modernPrefix } returns "modern/"
+        every { fileStorageService.get(bucket, key) } returns inputStream
+
+        avatarService.getImage(id)
+
+        verify(exactly = 1) { avatarRepository.findById(id) }
+        verify(exactly = 1) { awsConfiguration.legacyPrefix }
+        verify(exactly = 0) { awsConfiguration.legacyBucket }
+        verify(exactly = 1) { awsConfiguration.modernPrefix }
+        verify(exactly = 1) { awsConfiguration.modernBucket }
+        verify(exactly = 1) { fileStorageService.get(bucket, key) }
+    }
 }

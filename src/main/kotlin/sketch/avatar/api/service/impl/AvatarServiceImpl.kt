@@ -9,7 +9,9 @@ import sketch.avatar.api.service.FileStorageService
 import java.io.InputStream
 import javax.inject.Singleton
 import javax.persistence.EntityNotFoundException
+import javax.transaction.Transactional
 
+@Transactional
 @Singleton
 class AvatarServiceImpl(
         private val avatarRepository: AvatarRepository,
@@ -21,6 +23,9 @@ class AvatarServiceImpl(
     override fun findByKey(key: String): Avatar = avatarRepository.findByS3key(key) ?: throw EntityNotFoundException("Key: $key")
 
     override fun save(avatar: Avatar): Avatar = avatarRepository.save(avatar)
+
+    override fun update(avatar: Avatar) = avatarRepository.update(avatar)
+
     override fun findAll(): Iterable<Avatar> = avatarRepository.findAll()
 
     override fun findById(id: Long): Avatar = avatarRepository.findById(id).orElseGet { throw EntityNotFoundException("Id: $id") }

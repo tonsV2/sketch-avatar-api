@@ -40,5 +40,9 @@ class LegacyToModernRequestHandler : MicronautRequestHandler<SQSEvent, Unit>() {
         val newKey = key.replace(awsConfiguration.legacyPrefix, awsConfiguration.modernPrefix)
         logger.info { "FileStorageService.copy(${awsConfiguration.legacyBucket}, $key, ${awsConfiguration.modernBucket}, $newKey)" }
         fileStorageService.copy(awsConfiguration.legacyBucket, key, awsConfiguration.modernBucket, newKey)
+
+        logger.info { "AvatarService.update($avatar)" }
+        val newAvatar = Avatar(newKey, avatar.id)
+        avatarService.update(newAvatar)
     }
 }

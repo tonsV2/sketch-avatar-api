@@ -16,6 +16,10 @@ application {
     mainClassName = "sketch.avatar.api.Application"
 }
 
+allOpen {
+    annotations("io.micronaut.aop.Around", "javax.transaction.Transactional")
+}
+
 val kotlinVersion = project.properties["kotlinVersion"]
 
 repositories {
@@ -58,6 +62,7 @@ dependencies {
 
     implementation("io.micronaut.aws:micronaut-function-aws-api-proxy")
     implementation("com.amazonaws:aws-java-sdk-s3:1.11.414")
+    implementation("com.amazonaws:aws-lambda-java-events:3.6.0")
 
     implementation("io.github.microutils:kotlin-logging:2.0.3")
 }

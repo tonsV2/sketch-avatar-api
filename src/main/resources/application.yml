@@ -25,6 +25,9 @@ jpa:
 
 aws:
   s3:
-    bucket:
-      legacy: sketch-legacy
-      modern: sketch-modern
+    legacy:
+      bucket: sketch-legacy
+      prefix: image/
+    modern:
+      bucket: sketch-modern
+      prefix: avatar/

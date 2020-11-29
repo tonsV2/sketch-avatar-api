@@ -4,18 +4,24 @@ import com.amazonaws.util.IOUtils
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Delete
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Post
 import mu.KotlinLogging
 import sketch.avatar.api.domain.Avatar
+import sketch.avatar.api.repository.AvatarRepository
 import sketch.avatar.api.service.AvatarService
 
 @Controller
-class AvatarController(private val avatarService: AvatarService) {
+class AvatarController(private val avatarService: AvatarService, private val avatarRepository: AvatarRepository) {
     private val logger = KotlinLogging.logger {}
 
     @Post
     fun postAvatar(avatar: Avatar): Avatar = avatarService.save(avatar)
+
+    // I use this end point to reset the database. Obviously this should never be committed in a real world scenario
+    @Delete("/delete-avatars")
+    fun deleteAvatars() = avatarRepository.deleteAll()
 
     @Get
     fun getAvatars(): Iterable<Avatar> = avatarService.findAll()

@@ -7,7 +7,7 @@ https://github.com/tonsV2/sketch-avatar-infrastructure
 # Quick start
 The following commands will create a bucket, build a fat jar and upload it to S3.
 
-(The default region for the infrastructure project is `us-east-1` and so that should be used here as well)
+(The default region for the infrastructure project is `us-east-1` so that should be used here as well)
 
 ```bash
 aws s3 mb s3://mn-lambda

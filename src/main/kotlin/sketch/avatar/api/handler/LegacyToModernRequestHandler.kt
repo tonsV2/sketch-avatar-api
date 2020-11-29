@@ -26,6 +26,7 @@ class LegacyToModernRequestHandler : MicronautRequestHandler<SQSEvent, Unit>() {
 
     override fun execute(input: SQSEvent) {
         logger.info { "LegacyToModernRequestHandler.execute invoked" }
+        logger.info { "Got ${input.records.size} records" }
 
         input.records.forEach {
             handle(it)

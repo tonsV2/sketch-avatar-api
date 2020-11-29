@@ -9,11 +9,6 @@ import sketch.avatar.api.domain.Avatar
 
 @MicronautTest
 internal class AvatarRepositoryTest(private val avatarRepository: AvatarRepository) {
-    @BeforeEach
-    fun setUp() {
-        MockKAnnotations.init(this)
-    }
-
     @Test
     fun `Find by key`() {
         // Given
